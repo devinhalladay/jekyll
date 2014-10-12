@@ -13,6 +13,7 @@ module Jekyll
       date
       id
       categories
+      type
       next
       previous
       tags
@@ -35,7 +36,7 @@ module Jekyll
 
     attr_accessor :site
     attr_accessor :data, :extracted_excerpt, :content, :output, :ext
-    attr_accessor :date, :slug, :tags, :categories
+    attr_accessor :date, :slug, :tags, :categories, :type
 
     attr_reader :name
 
@@ -53,6 +54,7 @@ module Jekyll
       @name = name
 
       self.categories = dir.downcase.split('/').reject { |x| x.empty? }
+      self.type = dir.downcase.split('/').reject { |x| x.empty? }
       process(name)
       read_yaml(@base, name)
 
@@ -65,6 +67,7 @@ module Jekyll
       end
 
       populate_categories
+      populate_type
       populate_tags
     end
 
@@ -80,6 +83,13 @@ module Jekyll
       categories_from_data = Utils.pluralized_array_from_hash(data, 'category', 'categories')
       self.categories = (
         Array(categories) + categories_from_data
+      ).map {|c| c.to_s.downcase}.flatten.uniq
+    end
+
+    def populate_type
+      type_from_data = Utils.pluralized_array_from_hash(data, 'type', 'types')
+      self.type = (
+        Array(type) + type_from_data
       ).map {|c| c.to_s.downcase}.flatten.uniq
     end
 
@@ -219,6 +229,7 @@ module Jekyll
         :i_day       => date.strftime("%-d"),
         :i_month     => date.strftime("%-m"),
         :categories  => (categories || []).map { |c| c.to_s }.join('/'),
+        :type        => (type || []).map { |c| c.to_s }.join('/'),
         :short_month => date.strftime("%b"),
         :short_year  => date.strftime("%y"),
         :y_day       => date.strftime("%j"),

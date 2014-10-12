@@ -312,6 +312,10 @@ module Jekyll
       post_attr_hash('tags')
     end
 
+    def type
+      post_attr_hash('type')
+    end
+
     def categories
       post_attr_hash('categories')
     end
@@ -351,6 +355,7 @@ module Jekyll
             "static_files" => static_files.sort { |a, b| a.relative_path <=> b.relative_path },
             "html_pages"   => pages.select { |page| page.html? || page.url.end_with?("/") },
             "categories"   => post_attr_hash('categories'),
+            "type"         => post_attr_hash('type'),
             "tags"         => post_attr_hash('tags'),
             "collections"  => collections,
             "documents"    => documents,
